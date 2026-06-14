@@ -5,6 +5,8 @@ interface PhoneInputProps {
   /** Teléfono completo (ej. "+54 1123456789"). */
   value: string;
   onChange: (value: string) => void;
+  /** Pinta el campo en rojo (validación de obligatorio). */
+  invalid?: boolean;
 }
 
 /** Separa "+54 11..." en { codigo, numero }. Default de código: +54. */
@@ -25,7 +27,8 @@ function normalizarNumero(n: string): string {
 }
 
 /** Teléfono con 2 casilleros: código de país (+54 por defecto) y número. */
-const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange }) => {
+const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, invalid }) => {
+  const errClass = invalid ? 'input-error' : '';
   const inicial = split(value);
   const [codigo, setCodigo] = useState(inicial.codigo);
   const [numero, setNumero] = useState(inicial.numero);
@@ -53,6 +56,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange }) => {
       <div style={{ flex: '0 0 92px' }}>
         <Input
           value={codigo}
+          className={errClass}
           inputMode="tel"
           maxLength={5}
           onIonInput={(e) => {
@@ -66,6 +70,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange }) => {
       <div style={{ flex: 1 }}>
         <Input
           value={numero}
+          className={errClass}
           type="tel"
           inputMode="numeric"
           placeholder="1123456789"

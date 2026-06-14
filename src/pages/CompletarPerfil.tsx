@@ -26,6 +26,10 @@ const CompletarPerfil: React.FC = () => {
   const [telefono, setTelefono] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  /** Campo obligatorio sin completar tras intentar enviar (se limpia al completarlo). */
+  const falta = (v: string) => submitted && !v.trim();
 
   useEffect(() => {
     if (user) {
@@ -38,6 +42,7 @@ const CompletarPerfil: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSubmitted(true);
     if (!nombre.trim() || !apellido.trim() || !telefono.trim()) {
       setError('Nombre, apellido y teléfono son obligatorios');
       return;
@@ -68,9 +73,10 @@ const CompletarPerfil: React.FC = () => {
           </div>
 
           <div className="field">
-            <label className="field-label">Nombre *</label>
+            <label className={`field-label ${falta(nombre) ? 'label-error' : ''}`}>Nombre *</label>
             <Input
               value={nombre}
+              className={falta(nombre) ? 'input-error' : ''}
               autocapitalize="words"
               onIonInput={(e) => {
                 const v = capitalizar(soloLetras(e.detail.value ?? ''));
@@ -82,9 +88,10 @@ const CompletarPerfil: React.FC = () => {
           </div>
 
           <div className="field">
-            <label className="field-label">Apellido *</label>
+            <label className={`field-label ${falta(apellido) ? 'label-error' : ''}`}>Apellido *</label>
             <Input
               value={apellido}
+              className={falta(apellido) ? 'input-error' : ''}
               autocapitalize="words"
               onIonInput={(e) => {
                 const v = capitalizar(soloLetras(e.detail.value ?? ''));
@@ -96,8 +103,8 @@ const CompletarPerfil: React.FC = () => {
           </div>
 
           <div className="field">
-            <label className="field-label">Teléfono *</label>
-            <PhoneInput value={telefono} onChange={setTelefono} />
+            <label className={`field-label ${falta(telefono) ? 'label-error' : ''}`}>Teléfono *</label>
+            <PhoneInput value={telefono} onChange={setTelefono} invalid={falta(telefono)} />
           </div>
 
           {error && <p className="text-red-600 ion-margin-top">{error}</p>}

@@ -81,6 +81,14 @@ ion-item.form-field:last-of-type {
   --padding-bottom: 0.7rem;
 }
 
+/* Estado de error: campo obligatorio sin completar */
+.rounded-input.input-error {
+  border-color: var(--ion-color-danger, #dc2626);
+}
+.field-label.label-error {
+  color: var(--ion-color-danger, #dc2626);
+}
+
 /* Autocompletado (input + lista filtrada) */
 .autocomplete-wrap {
   position: relative;
