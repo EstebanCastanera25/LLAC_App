@@ -1,0 +1,256 @@
+/* ============================================================
+   Login de la app — réplica del login del panel LLAC_admin
+   con la paleta violeta/celeste LLA. Mismos efectos:
+   anillos de fondo, glow de tarjeta, logo heartbeat + pulse-ring,
+   título y botón con degradado, overlay de carga.
+   ============================================================ */
+
+.login-content {
+  --background: transparent;
+}
+
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #f5f0fb, #ffffff, #e6f6fd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== Anillos de fondo ===== */
+.ripple-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.ripple-wrapper { position: absolute; }
+.ripple-group { position: relative; }
+
+.ripple {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+}
+.ripple-1 { border-color: #bfa8e0; opacity: 0.6; animation: ripple 4s ease-out forwards; }
+.ripple-2 { border-color: #7fd3f0; opacity: 0.4; animation: ripple 4s ease-out forwards; animation-delay: 0.5s; }
+.ripple-3 { border-color: #d9c9e0; opacity: 0.2; animation: ripple 4s ease-out forwards; animation-delay: 1s; }
+
+@keyframes ripple {
+  0%   { width: 0; height: 0; opacity: 0.6; margin-left: 0; margin-top: 0; }
+  50%  { opacity: 0.3; }
+  100% { width: 300px; height: 300px; margin-left: -150px; margin-top: -150px; opacity: 0; }
+}
+
+/* ===== Tarjeta ===== */
+.card-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  z-index: 10;
+}
+.shadow-layer {
+  position: absolute;
+  background: linear-gradient(to bottom right, #6c4c99, #39b5e6, #371858);
+  border-radius: 1.5rem;
+}
+.shadow-outer { inset: -0.25rem;  opacity: 0.2; filter: blur(1rem); }
+.shadow-inner { inset: -0.125rem; opacity: 0.3; filter: blur(0.5rem); }
+
+.login-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(1rem);
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 2rem;
+}
+
+/* ===== Logo ===== */
+.logo-container {
+  margin: 0.25rem auto -0.25rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(11rem, 42vw, 15rem);
+  height: clamp(11rem, 42vw, 15rem);
+}
+.logo-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: heartbeat 2.5s ease-in-out infinite;
+  z-index: 2;
+}
+.logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.3);
+  transform-origin: center center;
+  filter: drop-shadow(0 8px 24px rgba(55, 24, 88, 0.18));
+}
+.pulse-ring {
+  position: absolute;
+  width: 85%;
+  height: 85%;
+  border-radius: 50%;
+  border: 2px solid rgba(57, 181, 230, 0.4);
+  animation: pulse-water 2.5s ease-out infinite;
+  z-index: 1;
+}
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 2px solid rgba(57, 181, 230, 0.2);
+  animation: pulse-water 2.5s ease-out infinite 0.8s;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+@keyframes pulse-water {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.6);  opacity: 0; }
+}
+
+/* ===== Título ===== */
+.login-title-container {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+.login-title {
+  font-family: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.875rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #371858, #39b5e6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 0.5rem 0;
+}
+.login-subtitle {
+  color: rgba(29, 29, 29, 0.55);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ===== Error ===== */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.75rem;
+  background: rgba(226, 96, 47, 0.1);
+  border: 1px solid rgba(226, 96, 47, 0.28);
+  color: #b23c1c;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* ===== Botón Google (degradado) ===== */
+.google-button {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(to right, #371858, #39b5e6);
+  color: #ffffff;
+  padding: 0.9rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px -2px rgba(55, 24, 88, 0.25);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+.google-button:hover:not(:disabled) {
+  box-shadow: 0 10px 20px -6px rgba(55, 24, 88, 0.35);
+  transform: scale(1.02);
+}
+.google-button:active:not(:disabled) { transform: scale(0.98); }
+.google-button:disabled { opacity: 0.6; cursor: not-allowed; }
+.google-button .button-text,
+.google-button ion-icon { position: relative; z-index: 10; }
+.google-button ion-icon { font-size: 1.25rem; }
+.button-hover-effect {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #230552, #2a8fb8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.google-button:hover:not(:disabled) .button-hover-effect { opacity: 1; }
+
+/* ===== Overlay de carga ===== */
+.spinner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 5, 82, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+.spinner-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.spinner-ring {
+  width: 80px;
+  height: 80px;
+  border: 4px solid rgba(255, 255, 255, 0.18);
+  border-top: 4px solid #371858;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: absolute;
+}
+.spinner-ring-delay {
+  border-top-color: #39b5e6;
+  animation-delay: -0.5s;
+  width: 60px;
+  height: 60px;
+  margin: 10px;
+}
+.spinner-text {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 6rem;
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .login-card { padding: 1.5rem; }
+  .login-title { font-size: 1.6rem; }
+  .logo-container { width: 11rem; height: 11rem; }
+}

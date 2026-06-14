@@ -1,0 +1,142 @@
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonButtons
+} from '@ionic/react';
+import { useState } from 'react';
+import { Button, Input } from '../components';
+import { buildUrl, getTenantHeaders } from '../utils/api';
+
+interface EscrutinioModalProps {
+  onClose: () => void;
+}
+
+export interface ResultadoEscrutinio {
+  lista100: number;
+  votoEnBlanco: number;
+  nulo: number;
+  recurrido: number;
+}
+
+const EscrutinioModal: React.FC<EscrutinioModalProps> = ({ onClose }) => {
+  const [lista100, setLista100] = useState('');
+  const [votoEnBlanco, setVotoEnBlanco] = useState('');
+  const [nulo, setNulo] = useState('');
+  const [recurrido, setRecurrido] = useState('');
+
+  const handleSubmit = async () => {
+    const datos: ResultadoEscrutinio = {
+      lista100: parseInt(lista100, 10) || 0,
+      votoEnBlanco: parseInt(votoEnBlanco, 10) || 0,
+      nulo: parseInt(nulo, 10) || 0,
+      recurrido: parseInt(recurrido, 10) || 0
+    };
+    const mesaId = Number(localStorage.getItem('mesaId'));
+    // Datos de contexto guardados por el flujo de fiscalización.
+    let fiscal: Record<string, unknown> = {};
+    try { fiscal = JSON.parse(localStorage.getItem('fiscalData') || '{}'); } catch { /* noop */ }
+
+    const escrutinio = [
+      { nombre: 'Lista 100', nomenclatura: '100', cantidad: datos.lista100 },
+      { nombre: 'Voto en blanco', nomenclatura: 'BLANCO', cantidad: datos.votoEnBlanco },
+      { nombre: 'Nulo', nomenclatura: 'NULO', cantidad: datos.nulo },
+      { nombre: 'Recurrido', nomenclatura: 'RECURRIDO', cantidad: datos.recurrido },
+    ];
+
+    const body = {
+      establecimiento: {
+        seccion: localStorage.getItem('seccion') || '',
+        circuito: localStorage.getItem('circuito') || '',
+        mesa: mesaId,
+      },
+      persona: {
+        dni: Number(fiscal['dni_miembro']) || 0,
+        nombre: (fiscal['nombres_miembro'] as string) || '',
+        apellido: (fiscal['apellidos_miembro'] as string) || '',
+      },
+      escrutinio,
+      fechaEnviado: new Date().toISOString(),
+    };
+
+    try {
+      const res = await fetch(buildUrl('/api/app/actas/crear'), {
+        method: 'POST',
+        headers: getTenantHeaders({ 'Content-Type': 'application/json', Accept: 'application/json' }),
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        alert('Escrutinio enviado correctamente');
+        onClose();
+      } else {
+        alert(res.statusText || 'Error al enviar escrutinio');
+      }
+    } catch {
+      alert('Error al enviar escrutinio');
+    }
+  };
+
+  return (
+    <>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Escrutinio</IonTitle>
+          <IonButtons slot="end">
+            <Button onClick={onClose}>Cancelar</Button>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonItem className="form-field">
+          <IonLabel position="stacked" className="text-gray-700 font-semibold">
+            Lista 100
+          </IonLabel>
+          <Input
+            type="number"
+            value={lista100}
+            onIonChange={e => setLista100(e.detail.value ?? '')}
+          />
+        </IonItem>
+        <IonItem className="form-field">
+          <IonLabel position="stacked" className="text-gray-700 font-semibold">
+            Voto en blanco
+          </IonLabel>
+          <Input
+            type="number"
+            value={votoEnBlanco}
+            onIonChange={e => setVotoEnBlanco(e.detail.value ?? '')}
+          />
+        </IonItem>
+        <IonItem className="form-field">
+          <IonLabel position="stacked" className="text-gray-700 font-semibold">
+            Nulo
+          </IonLabel>
+          <Input
+            type="number"
+            value={nulo}
+            onIonChange={e => setNulo(e.detail.value ?? '')}
+          />
+        </IonItem>
+        <IonItem className="form-field">
+          <IonLabel position="stacked" className="text-gray-700 font-semibold">
+            Recurrido
+          </IonLabel>
+          <Input
+            type="number"
+            value={recurrido}
+            onIonChange={e => setRecurrido(e.detail.value ?? '')}
+          />
+        </IonItem>
+        <Button expand="block" className="ion-margin-top" onClick={handleSubmit}>
+          Enviar
+        </Button>
+      </IonContent>
+    </>
+  );
+};
+
+export default EscrutinioModal;
+

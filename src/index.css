@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Plus Jakarta Sans', 'Montserrat', sans-serif;
+}
+
+/* Tarjeta con el look del panel (sombra con tinte violeta) */
+ion-card {
+  box-shadow: var(--lla-card-shadow);
+  border-radius: 14px;
+}
+
+ion-item.form-field {
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --inner-padding-top: 0.35rem;
+  --inner-padding-bottom: 0.15rem;
+  --highlight-height: 0;
+  margin-bottom: 1.25rem;
+}
+
+ion-item.form-field ion-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  overflow: visible;
+  white-space: normal;
+  font-weight: 600;
+  color: var(--ion-text-color, #374151);
+}
+
+ion-item.form-field:last-of-type {
+  margin-bottom: 0;
+}
+
+.rounded-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--ion-color-step-300, #d1d5db);
+  border-radius: 0.75rem;
+  --border-radius: 0.75rem;
+  --background: var(--ion-item-background, #ffffff);
+}
+
+.rounded-select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--ion-color-step-300, #d1d5db);
+  border-radius: 0.75rem;
+  --border-radius: 0.75rem;
+  --background: var(--ion-item-background, #ffffff);
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+}
+
+.rounded-button {
+  --border-radius: 0.75rem;
+  border-radius: 0.75rem;
+}
+
+/* Campo de formulario con label propio (evita el recorte del label "stacked" de Ionic) */
+.field {
+  margin-bottom: 1.5rem;
+}
+.field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ion-text-color, #374151);
+}
+.field .rounded-input {
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.7rem;
+  --padding-bottom: 0.7rem;
+}
+
+/* Autocompletado (input + lista filtrada) */
+.autocomplete-wrap {
+  position: relative;
+}
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 230px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid var(--ion-color-step-300, #d1d5db);
+  border-radius: 0.75rem;
+  box-shadow: var(--lla-card-shadow);
+}
+.autocomplete-list ion-item {
+  --min-height: 42px;
+  --padding-start: 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* Toasts con identidad LLA */
+.toast-lla {
+  --border-radius: 12px;
+  --box-shadow: var(--lla-card-shadow);
+  --color: #ffffff;
+  font-weight: 600;
+}
+.toast-lla::part(message) {
+  font-weight: 600;
+}
+.toast-lla-ok {
+  --background: #371858;            /* violeta LLA */
+}
+.toast-lla-ok::part(icon) {
+  color: #39b5e6;                   /* check celeste */
+}
+.toast-lla-error {
+  --background: #e2602f;            /* naranja LLA */
+}
+.toast-lla-error::part(icon) {
+  color: #ffffff;
+}

@@ -1,0 +1,45 @@
+@token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJub21icmVzIjoiQXBwIiwiYXBlbGxpZG9zIjoiQXBwIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsInJvbCI6ImZpc2NhbCIsInVzdWFyaW8iOiJ0ZXN0IiwiaWF0IjoxNzU5NjEyODQ2LCJleHAiOjE3NTk2OTkyNDZ9.5gIRsFsdn-FSH_Wtqu4bpMufIy6-L2STx0Qs6IZq14U'
+@baseUrl =http://api.lalibertadavanzacomuna7.com 
+### Login
+POST http://api.lalibertadavanzacomuna7.com/auth/login
+Content-Type: application/json
+{
+  "usuario": "test",
+  "password": "Test123456"
+}
+
+###buscar fiscal
+@token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJub21icmVzIjoiQXBwIiwiYXBlbGxpZG9zIjoiQXBwIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsInJvbCI6ImZpc2NhbCIsInVzdWFyaW8iOiJ0ZXN0IiwiaWF0IjoxNzU5NjEyODQ2LCJleHAiOjE3NTk2OTkyNDZ9.5gIRsFsdn-FSH_Wtqu4bpMufIy6-L2STx0Qs6IZq14U'
+POST http://api.lalibertadavanzacomuna7.com/api/fiscalizacion/buscarFiscal
+Content-Type: application/json1
+Authorization: {{token}}
+{
+    "dni_miembro": 36293331
+}
+
+### Buscar fiscal
+POST http://api.lalibertadavanzacomuna7.com/api/fiscalizacion/buscarFiscal
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJub21icmVzIjoiQXBwIiwiYXBlbGxpZG9zIjoiQXBwIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsInJvbCI6ImZpc2NhbCIsInVzdWFyaW8iOiJ0ZXN0IiwiaWF0IjoxNzU5NjEyODQ2LCJleHAiOjE3NTk2OTkyNDZ9.5gIRsFsdn-FSH_Wtqu4bpMufIy6-L2STx0Qs6IZq14U
+
+{
+  "dni_miembro": 36293331
+}
+
+### Listar Candidatos en App +++++++++-3POST http://api.lalibertadavanzacomuna7.com/api/candidatos/listarCandidatos
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+}
+### Listar fiscalizaciones #nombre apellido y zona 36293331 11386991  95378025 25360613 17652670
+POST http://api.lalibertadavanzacomuna7.com/api/fiscalizacion/listar
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+    "dni_miembro": "96179932",
+    "asignado": true
+}
+
+ ### Listar fiscal

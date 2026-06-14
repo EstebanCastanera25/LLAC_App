@@ -1,0 +1,39 @@
+import { IonContent, IonItem, IonLabel } from '@ionic/react';
+import { Button, Input } from '../components';
+import { useState } from 'react';
+import Layout from '../components/Layout';
+
+const VoterDetails: React.FC = () => {
+  const [name, setName] = useState('');
+  const [id, setId] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('voterName', name);
+    localStorage.setItem('voterId', id);
+  };
+
+  return (
+    <Layout backHref="/vote">
+      <IonContent className="ion-padding">
+        <form onSubmit={handleSubmit}>
+          <IonItem className="form-field">
+            <IonLabel position="stacked" className="text-gray-700 font-semibold">
+              Nombre
+            </IonLabel>
+            <Input value={name} onIonChange={e => setName(e.detail.value!)} required />
+          </IonItem>
+          <IonItem className="form-field">
+            <IonLabel position="stacked" className="text-gray-700 font-semibold">
+              DNI
+            </IonLabel>
+            <Input value={id} onIonChange={e => setId(e.detail.value!)} required />
+          </IonItem>
+          <Button expand="block" type="submit" className="ion-margin-top">Guardar</Button>
+        </form>
+      </IonContent>
+    </Layout>
+  );
+};
+
+export default VoterDetails;

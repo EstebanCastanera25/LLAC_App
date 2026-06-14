@@ -1,0 +1,89 @@
+/* ============================================================
+   Design system LLA aplicado al tema Ionic de LLAC_App.
+   Fuente: skill `llac-design-system` (brand oficial La Libertad Avanza).
+   ============================================================ */
+
+:root {
+  /* --- Paleta oficial LLA --- */
+  --lla-primary: #371859;        /* violeta principal */
+  --lla-primary-dark: #230552;
+  --lla-primary-hover: #2f0163;
+  --lla-celeste: #39b5e6;        /* accent */
+  --lla-violeta-claro: #6c4c99;
+  --lla-magenta: #b23c8e;
+  --lla-bordeaux: #ad3559;       /* destructivo */
+  --lla-naranja: #e2602f;        /* danger/validación */
+  --lla-dorado: #efb041;         /* warning */
+  --lla-negro: #1d1d1d;
+  --lla-blanco: #ffffff;
+
+  /* Sombra con tinte violeta (como $cardshadow del panel) */
+  --lla-card-shadow: rgb(55 24 89 / 8%) 0px 0px 2px 0px, rgb(55 24 89 / 10%) 0px 12px 24px -4px;
+
+  /* --- Ionic: primary = violeta LLA --- */
+  --ion-color-primary: #371859;
+  --ion-color-primary-rgb: 55, 24, 89;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #230552;
+  --ion-color-primary-tint: #4f2a7a;
+
+  /* secondary = celeste */
+  --ion-color-secondary: #39b5e6;
+  --ion-color-secondary-rgb: 57, 181, 230;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #2a8fb8;
+  --ion-color-secondary-tint: #54bfe9;
+
+  /* tertiary = violeta claro */
+  --ion-color-tertiary: #6c4c99;
+  --ion-color-tertiary-rgb: 108, 76, 153;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #5f4387;
+  --ion-color-tertiary-tint: #7b5ea3;
+
+  /* success = turquesa */
+  --ion-color-success: #13deb9;
+  --ion-color-success-rgb: 19, 222, 185;
+  --ion-color-success-contrast: #04342c;
+  --ion-color-success-contrast-rgb: 4, 52, 44;
+  --ion-color-success-shade: #11c3a3;
+  --ion-color-success-tint: #2be1c0;
+
+  /* warning = dorado */
+  --ion-color-warning: #efb041;
+  --ion-color-warning-rgb: 239, 176, 65;
+  --ion-color-warning-contrast: #3a2a00;
+  --ion-color-warning-contrast-rgb: 58, 42, 0;
+  --ion-color-warning-shade: #d29b39;
+  --ion-color-warning-tint: #f1b854;
+
+  /* danger = naranja LLA */
+  --ion-color-danger: #e2602f;
+  --ion-color-danger-rgb: 226, 96, 47;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #c75429;
+  --ion-color-danger-tint: #e57044;
+
+  /* Tipografía: body = Plus Jakarta Sans */
+  --ion-font-family: 'Plus Jakarta Sans', 'Montserrat', -apple-system, sans-serif;
+
+  /* Fondos / textos */
+  --ion-background-color: #faf9fc;
+  --ion-background-color-rgb: 250, 249, 252;
+  --ion-text-color: #1d1d1d;
+  --ion-text-color-rgb: 29, 29, 29;
+  --ion-toolbar-background: #371859;
+  --ion-toolbar-color: #ffffff;
+  --ion-item-background: #ffffff;
+}
+
+/* Títulos en Montserrat (display) */
+h1, h2, h3, .display-font {
+  font-family: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: var(--lla-primary);
+}
