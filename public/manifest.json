@@ -1,21 +1,21 @@
 {
-  "short_name": "Fiscalización",
-  "name": "Fiscalización Ciudadana",
+  "short_name": "LLA Comuna 7",
+  "name": "LLA Comuna 7",
   "icons": [
     {
-      "src": "assets/icon/favicon.png",
+      "src": "assets/logo-lla.png",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "type": "image/png"
     },
     {
-      "src": "assets/icon/icon.png",
+      "src": "assets/logo-lla.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ffffff",
+  "theme_color": "#371858",
   "background_color": "#ffffff"
 }

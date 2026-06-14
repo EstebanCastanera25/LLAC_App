@@ -6,12 +6,16 @@ import { personCircleOutline, checkmarkCircle, alertCircle } from 'ionicons/icon
 import Layout from '../../components/Layout';
 import { Button, Input } from '../../components';
 import Autocomplete from '../../components/Autocomplete';
+import PhoneInput from '../../components/PhoneInput';
 import { useAuth } from '../../AuthContext';
 import type { ProfileInput } from '../../AuthContext';
 import { PROVINCIAS, GENEROS, CABA, BARRIOS_CABA } from './comuna.constants';
 
 const capitalizar = (s: string) =>
   s.replace(/(^|\s)(\p{L})/gu, (_m, sep: string, ch: string) => sep + ch.toUpperCase());
+
+/** Deja solo letras (incl. acentos y ñ) y espacios — sin números ni símbolos. */
+const soloLetras = (s: string) => s.replace(/[^\p{L}\s]/gu, '');
 
 const VACIO: ProfileInput = {
   nombre: '', apellido: '', telefono: '', dni: '', fechaNacimiento: '', genero: '',
@@ -104,19 +108,26 @@ const MiPerfil: React.FC = () => {
           <div className="field">
             <label className="field-label">Nombre *</label>
             <Input value={form.nombre} autocapitalize="words"
-              onIonInput={(e) => set('nombre', capitalizar(e.detail.value ?? ''))} required />
+              onIonInput={(e) => {
+                const v = capitalizar(soloLetras(e.detail.value ?? ''));
+                (e.target as HTMLIonInputElement).value = v;
+                set('nombre', v);
+              }} required />
           </div>
 
           <div className="field">
             <label className="field-label">Apellido *</label>
             <Input value={form.apellido} autocapitalize="words"
-              onIonInput={(e) => set('apellido', capitalizar(e.detail.value ?? ''))} required />
+              onIonInput={(e) => {
+                const v = capitalizar(soloLetras(e.detail.value ?? ''));
+                (e.target as HTMLIonInputElement).value = v;
+                set('apellido', v);
+              }} required />
           </div>
 
           <div className="field">
             <label className="field-label">Teléfono *</label>
-            <Input value={form.telefono} type="tel" inputMode="tel" placeholder="+54 11 1234-5678"
-              onIonInput={(e) => set('telefono', e.detail.value ?? '')} required />
+            <PhoneInput value={form.telefono} onChange={(v) => set('telefono', v)} />
           </div>
 
           <div className="field">

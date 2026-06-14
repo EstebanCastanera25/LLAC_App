@@ -3,11 +3,15 @@ import { IonContent, IonText } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Button, Input } from '../components';
+import PhoneInput from '../components/PhoneInput';
 import { useAuth } from '../AuthContext';
 
 /** Capitaliza la primera letra de cada palabra (respeta acentos y ñ). */
 const capitalizar = (s: string) =>
   s.replace(/(^|\s)(\p{L})/gu, (_m, sep: string, ch: string) => sep + ch.toUpperCase());
+
+/** Deja solo letras (incl. acentos y ñ) y espacios — sin números ni símbolos. */
+const soloLetras = (s: string) => s.replace(/[^\p{L}\s]/gu, '');
 
 /**
  * Completar perfil tras el registro con Google. Email read-only; nombre, apellido
@@ -68,7 +72,11 @@ const CompletarPerfil: React.FC = () => {
             <Input
               value={nombre}
               autocapitalize="words"
-              onIonInput={(e) => setNombre(capitalizar(e.detail.value ?? ''))}
+              onIonInput={(e) => {
+                const v = capitalizar(soloLetras(e.detail.value ?? ''));
+                (e.target as HTMLIonInputElement).value = v;
+                setNombre(v);
+              }}
               required
             />
           </div>
@@ -78,21 +86,18 @@ const CompletarPerfil: React.FC = () => {
             <Input
               value={apellido}
               autocapitalize="words"
-              onIonInput={(e) => setApellido(capitalizar(e.detail.value ?? ''))}
+              onIonInput={(e) => {
+                const v = capitalizar(soloLetras(e.detail.value ?? ''));
+                (e.target as HTMLIonInputElement).value = v;
+                setApellido(v);
+              }}
               required
             />
           </div>
 
           <div className="field">
             <label className="field-label">Teléfono *</label>
-            <Input
-              value={telefono}
-              type="tel"
-              inputMode="tel"
-              placeholder="+54 11 1234-5678"
-              onIonInput={(e) => setTelefono(e.detail.value ?? '')}
-              required
-            />
+            <PhoneInput value={telefono} onChange={setTelefono} />
           </div>
 
           {error && <p className="text-red-600 ion-margin-top">{error}</p>}
