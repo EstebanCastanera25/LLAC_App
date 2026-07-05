@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   IonPage,
   IonHeader,
@@ -7,13 +7,19 @@ import {
   IonButtons,
   IonButton,
   IonFooter,
-  IonIcon
+  IonIcon,
+  IonPopover,
+  IonContent,
+  IonList,
+  IonItem,
+  IonLabel,
 } from '@ionic/react';
-import { chevronBackOutline } from 'ionicons/icons';
+import { chevronBackOutline, personCircleOutline, personOutline, logOutOutline } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { getMemberNameParts, useFiscalData } from '../FiscalDataContext';
 import type { FiscalData } from '../FiscalDataContext';
+import NotificacionesBell from './NotificacionesBell';
 
 
 
@@ -66,6 +72,7 @@ const Layout: React.FC<LayoutProps> = ({ children, footer, backHref }) => {
   const history = useHistory();
   const location = useLocation();
   const { fiscalData, setFiscalData } = useFiscalData();
+  const [menu, setMenu] = useState<{ open: boolean; event?: Event }>({ open: false });
 
   const HIDE_NAME_ROUTES = ['/login', '/fiscalizacion-lookup'];
   const isHideName = HIDE_NAME_ROUTES.some((r) =>
@@ -107,7 +114,7 @@ const Layout: React.FC<LayoutProps> = ({ children, footer, backHref }) => {
     <IonPage>
       <IonHeader className="bg-primary-500 text-white">
         <IonToolbar className="flex justify-between items-center px-4">
-          {backHref && (
+          {backHref ? (
             <IonButtons slot="start">
               <IonButton
                 color="light"
@@ -118,15 +125,59 @@ const Layout: React.FC<LayoutProps> = ({ children, footer, backHref }) => {
                 Volver
               </IonButton>
             </IonButtons>
+          ) : (
+            <img
+              slot="start"
+              src="/assets/logo-lla-mark.png"
+              alt="La Libertad Avanza"
+              style={{ height: 40, width: 'auto', objectFit: 'contain', marginInlineStart: 12 }}
+            />
           )}
           <IonTitle className="font-bold text-lg">{title}</IonTitle>
           {showLogout && (
             <IonButtons slot="end">
-              <IonButton color="light" onClick={handleLogout}>Salir</IonButton>
+              <NotificacionesBell />
+              <IonButton
+                color="light"
+                aria-label="Menú de perfil"
+                onClick={(e) => setMenu({ open: true, event: e.nativeEvent })}
+              >
+                <IonIcon slot="icon-only" icon={personCircleOutline} />
+              </IonButton>
             </IonButtons>
           )}
         </IonToolbar>
       </IonHeader>
+
+      <IonPopover
+        isOpen={menu.open}
+        event={menu.event}
+        onDidDismiss={() => setMenu({ open: false })}
+        alignment="end"
+        side="bottom"
+      >
+        <IonContent>
+          <IonList>
+            <IonItem
+              button
+              detail={false}
+              onClick={() => { setMenu({ open: false }); history.push('/comuna/perfil'); }}
+            >
+              <IonIcon icon={personOutline} slot="start" />
+              <IonLabel>Mi Perfil</IonLabel>
+            </IonItem>
+            <IonItem
+              button
+              detail={false}
+              lines="none"
+              onClick={() => { setMenu({ open: false }); void handleLogout(); }}
+            >
+              <IonIcon icon={logOutOutline} slot="start" color="danger" />
+              <IonLabel color="danger">Salir</IonLabel>
+            </IonItem>
+          </IonList>
+        </IonContent>
+      </IonPopover>
       {children}
       {footer && <IonFooter>{footer}</IonFooter>}
     </IonPage>

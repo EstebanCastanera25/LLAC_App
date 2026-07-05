@@ -135,3 +135,61 @@ ion-item.form-field:last-of-type {
 .toast-lla-error::part(icon) {
   color: #ffffff;
 }
+
+/* ===================== Responsividad (celu / tablet / notebook) ===================== */
+
+/* Barra de tabs: que los 6 ítems entren sin cortarse en cualquier celular */
+ion-tab-button {
+  min-width: 0;
+  padding-inline: 2px;
+}
+ion-tab-button ion-label {
+  font-size: clamp(9px, 2.6vw, 11px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Títulos fluidos: no aprietan en pantallas chicas ni se agrandan de más */
+.titulo-fluid {
+  font-size: clamp(1.15rem, 5vw, 1.6rem);
+}
+
+/* Imágenes fluidas por defecto (evita desbordes en phones chicos) */
+ion-content img,
+ion-content ion-img {
+  max-width: 100%;
+}
+
+/* Padding un poco menor en pantallas muy angostas */
+@media (max-width: 360px) {
+  ion-content.ion-padding {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}
+
+/* Marco centrado en tablet / notebook (celular queda full-width) */
+@media (min-width: 768px) {
+  body {
+    background: #ECECF3;
+  }
+  ion-app {
+    max-width: 900px;
+    margin-inline: auto;
+    box-shadow: 0 0 32px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Secciones de "tarjetas repetidas" en 2 columnas */
+  .cols-md {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cols-md ion-item {
+    --border-width: 0;
+    border: 1px solid var(--ion-color-light-shade, #d7d8da);
+    border-radius: 10px;
+  }
+}

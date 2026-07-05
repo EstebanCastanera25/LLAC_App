@@ -100,6 +100,19 @@ export async function postJson<T = unknown>(
   return { ok: resp.ok, status: resp.status, payload: payload as T | string };
 }
 
+/** DELETE JSON genérico */
+export async function delJson<T = unknown>(
+  path: string,
+  headers?: HeadersInit
+): Promise<{ ok: boolean; status: number; payload: T | string }> {
+  const url = buildUrl(path);
+  const finalHeaders = mergeHeaders({ Accept: 'application/json' }, headers);
+  const resp = await fetch(url, { method: 'DELETE', headers: finalHeaders });
+  const ct = resp.headers.get('content-type') || '';
+  const payload = ct.includes('application/json') ? await resp.json() : await resp.text();
+  return { ok: resp.ok, status: resp.status, payload: payload as T | string };
+}
+
 /** GET JSON genérico */
 export async function getJson<T = unknown>(
   path: string,

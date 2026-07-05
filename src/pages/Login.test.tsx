@@ -14,6 +14,8 @@ const renderWithAuth = (authValue: Partial<AuthContextType> = {}) => {
     isAuthenticated: false,
     loading: false,
     esFiscal: false,
+    esCoordinador: false,
+    esAdminComuna: false,
     fiscalizacionEnabled: false,
     loginWithGoogle: vi.fn().mockResolvedValue(undefined),
     updateProfile: vi.fn().mockResolvedValue(undefined),

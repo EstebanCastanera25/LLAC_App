@@ -10,6 +10,7 @@ import {
   clearToken,
 } from './utils/api';
 import { getConfig } from './config';
+import { getCoordinacionEstado } from './services/coordinacion';
 
 export type AppEstado = 'pendiente' | 'aprobado' | 'rechazado';
 
@@ -57,6 +58,10 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   esFiscal: boolean;
+  /** True si el usuario es coordinador de al menos un circuito (RBAC real, vía backend). */
+  esCoordinador: boolean;
+  /** True si el usuario es admin de la comuna (RBAC real, vía backend). */
+  esAdminComuna: boolean;
   fiscalizacionEnabled: boolean;
   loginWithGoogle: () => Promise<void>;
   updateProfile: (data: ProfileInput) => Promise<AppUser>;
@@ -84,6 +89,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<AppUser | null>(null);
   const [token, setTokenState] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [esCoordinador, setEsCoordinador] = useState(false);
+  const [esAdminComuna, setEsAdminComuna] = useState(false);
 
   const persist = (u: AppUser, t: string) => {
     setUser(u);
@@ -95,8 +102,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clearSession = () => {
     setUser(null);
     setTokenState(null);
+    setEsCoordinador(false);
+    setEsAdminComuna(false);
     clearToken();
     localStorage.removeItem(USER_KEY);
+  };
+
+  /** Resuelve rol de coordinación (coordinador / admin de comuna) del RBAC real. */
+  const refreshCoordinacion = async () => {
+    try {
+      const e = await getCoordinacionEstado();
+      setEsCoordinador(!!e.esCoordinador);
+      setEsAdminComuna(!!e.esAdminComuna);
+    } catch {
+      setEsCoordinador(false);
+      setEsAdminComuna(false);
+    }
   };
 
   // Intercambia el access_token de Auth0 por el JWT propio de la app.
@@ -113,6 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const picked = pickUserAndToken(r.payload);
     if (!picked) throw new Error('Respuesta de login inválida');
     persist(picked.user, picked.token);
+    void refreshCoordinacion();
   };
 
   // Restauración inicial + manejo de callback de Auth0.
@@ -127,6 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           setUser(JSON.parse(storedUser));
           setTokenState(storedToken);
+          void refreshCoordinacion();
         } catch {
           clearSession();
         }
@@ -193,6 +216,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const d = (r.payload as { data?: AppUser })?.data;
       if (d && token) persist(d, token);
     }
+    void refreshCoordinacion();
   };
 
   const logout = async () => {
@@ -225,6 +249,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated: !!user && !!token,
     loading,
     esFiscal: !!user?.perfiles?.includes('fiscal'),
+    esCoordinador,
+    esAdminComuna,
     fiscalizacionEnabled: getConfig().fiscalizacionEnabled,
     loginWithGoogle,
     updateProfile,
