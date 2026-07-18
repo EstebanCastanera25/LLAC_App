@@ -15,6 +15,7 @@ import {
 } from '../FiscalDataContext';
 import type { FiscalData } from '../FiscalDataContext';
 import { buildUrl, getTenantHeaders } from '../utils/api';
+import { marcarPresente, marcarRecibioViveres } from '../services/fiscalizacion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Camera, CameraResultType, CameraSource, CameraDirection } from '@capacitor/camera';
@@ -606,6 +607,78 @@ const FiscalizacionActions: React.FC = () => {
     [isFiscalGeneral, isFiscalZonal],
   );
 
+  // ===== Jornada electoral: presente + comida recibida =====
+  const [jornadaError, setJornadaError] = useState<string | null>(null);
+  const [marcandoPresente, setMarcandoPresente] = useState(false);
+  const [marcandoComida, setMarcandoComida] = useState(false);
+
+  const fiscalRecordJornada = (fiscalData as Record<string, unknown> | null) || {};
+  const fiscalizacionId = String(fiscalRecordJornada['_id'] ?? '');
+  const estaPresente = fiscalRecordJornada['presente'] === true;
+  const horaLlegada = useMemo(() => {
+    const raw = fiscalRecordJornada['hora_llegada'];
+    if (!raw) return '';
+    const d = new Date(String(raw));
+    return Number.isNaN(d.getTime())
+      ? ''
+      : d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+  }, [fiscalRecordJornada]);
+  const comidaRecibida = useMemo(() => {
+    const est = fiscalRecordJornada['establecimiento_fiscalizacion'] as Record<string, unknown> | undefined;
+    return est?.['fg_recibio_viveres'] === true;
+  }, [fiscalRecordJornada]);
+
+  const handleTogglePresente = useCallback(async () => {
+    if (!fiscalizacionId || marcandoPresente || !fiscalData) return;
+    setMarcandoPresente(true);
+    setJornadaError(null);
+    try {
+      const r = await marcarPresente(fiscalizacionId, !estaPresente);
+      if (r.status === 401) { history.replace('/login'); return; }
+      if (!r.ok) {
+        const mensaje = (r.payload as Record<string, unknown>)?.['mensaje'];
+        setJornadaError(typeof mensaje === 'string' ? mensaje : 'No se pudo registrar el presente');
+        return;
+      }
+      const data = ((r.payload as Record<string, unknown>)?.['data'] ?? {}) as Record<string, unknown>;
+      const next = {
+        ...(fiscalData as Record<string, unknown>),
+        presente: data['presente'] ?? !estaPresente,
+        hora_llegada: data['hora_llegada'] ?? null,
+      };
+      setFiscalData(next as FiscalData);
+      localStorage.setItem('fiscalData', JSON.stringify(next));
+    } catch {
+      setJornadaError('No se pudo registrar el presente. Verificá tu conexión.');
+    } finally {
+      setMarcandoPresente(false);
+    }
+  }, [estaPresente, fiscalData, fiscalizacionId, history, marcandoPresente, setFiscalData]);
+
+  const handleComidaRecibida = useCallback(async () => {
+    if (!fiscalizacionId || marcandoComida || !fiscalData) return;
+    setMarcandoComida(true);
+    setJornadaError(null);
+    try {
+      const r = await marcarRecibioViveres(fiscalizacionId, true);
+      if (r.status === 401) { history.replace('/login'); return; }
+      if (!r.ok) {
+        const mensaje = (r.payload as Record<string, unknown>)?.['mensaje'];
+        setJornadaError(typeof mensaje === 'string' ? mensaje : 'No se pudo registrar la recepción');
+        return;
+      }
+      const rec = fiscalData as Record<string, unknown>;
+      const est = { ...((rec['establecimiento_fiscalizacion'] as Record<string, unknown>) || {}), fg_recibio_viveres: true };
+      const next = { ...rec, establecimiento_fiscalizacion: est };
+      setFiscalData(next as FiscalData);
+      localStorage.setItem('fiscalData', JSON.stringify(next));
+    } catch {
+      setJornadaError('No se pudo registrar la recepción. Verificá tu conexión.');
+    } finally {
+      setMarcandoComida(false);
+    }
+  }, [fiscalData, fiscalizacionId, history, marcandoComida, setFiscalData]);
+
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [establecimientoForm, setEstablecimientoForm] = useState<EstablecimientoFormState>({
     seccion: '',
@@ -822,6 +895,35 @@ const FiscalizacionActions: React.FC = () => {
         )}
 
         <div className="flex flex-col items-center gap-4 w-4/5 mx-auto mt-4 pb-16">
+          <Button
+            onClick={handleTogglePresente}
+            color={estaPresente ? 'success' : undefined}
+            disabled={marcandoPresente || !fiscalizacionId}
+            className="w-full"
+          >
+            {marcandoPresente
+              ? 'Registrando…'
+              : estaPresente
+                ? `Presente ✓${horaLlegada ? ' ' + horaLlegada : ''}`
+                : 'Marcar presente'}
+          </Button>
+
+          {isFiscalGeneral && !comidaRecibida && (
+            <Button
+              onClick={handleComidaRecibida}
+              disabled={marcandoComida || !fiscalizacionId}
+              className="w-full"
+            >
+              {marcandoComida ? 'Registrando…' : 'Recibí la comida'}
+            </Button>
+          )}
+          {isFiscalGeneral && comidaRecibida && (
+            <p className="text-sm text-green-600 font-medium">Comida recibida ✓</p>
+          )}
+          {jornadaError && (
+            <p className="text-sm text-red-600 text-center">{jornadaError}</p>
+          )}
+
           <Button onClick={handleFoto} className="w-full">
             Tomar/Subir Foto
           </Button>
