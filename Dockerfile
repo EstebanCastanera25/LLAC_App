@@ -2,7 +2,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY . .
 # El front pega a /api (mismo origen, proxyado por nginx al backend)
 ENV VITE_API_BASE=/api
