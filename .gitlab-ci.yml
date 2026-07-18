@@ -1,0 +1,32 @@
+stages: [build, deploy]
+
+variables:
+  IMAGE: $CI_REGISTRY_IMAGE
+  DEPLOY_NAME: app          # nombre del Deployment y del container en k8s
+
+build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  # La auth del registry (config.json) viene montada por el runner en /kaniko/.docker
+  script:
+    - /kaniko/executor
+        --context "$CI_PROJECT_DIR"
+        --dockerfile "$CI_PROJECT_DIR/Dockerfile"
+        --destination "$IMAGE:$CI_COMMIT_SHORT_SHA"
+        --destination "$IMAGE:latest"
+        --insecure --skip-tls-verify --insecure-pull --cache=false
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deploy:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - kubectl -n llac set image deployment/$DEPLOY_NAME $DEPLOY_NAME="$IMAGE:$CI_COMMIT_SHORT_SHA"
+    - kubectl -n llac rollout status deployment/$DEPLOY_NAME --timeout=240s
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
