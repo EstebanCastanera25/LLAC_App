@@ -161,7 +161,13 @@ export async function crearReclamo(input: {
   });
   const ct = resp.headers.get('content-type') || '';
   const payload = ct.includes('application/json') ? await resp.json() : await resp.text();
-  if (!resp.ok) throw new Error(mensajeError(payload, resp.status));
+  if (!resp.ok) {
+    // El backend manda la causa real en `error`; la app solo muestra `mensaje`.
+    // Lo dejamos en consola para no quedar a ciegas ante un 500.
+    const causa = (payload as { error?: string })?.error;
+    if (causa) console.error('[crearReclamo] backend error:', causa);
+    throw new Error(mensajeError(payload, resp.status));
+  }
   return unwrap<Reclamo>(payload, {} as Reclamo);
 }
 
