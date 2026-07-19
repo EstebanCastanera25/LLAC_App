@@ -1,5 +1,7 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // dark: solo se activa con la clase .dark, nunca por prefers-color-scheme del SO.
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {

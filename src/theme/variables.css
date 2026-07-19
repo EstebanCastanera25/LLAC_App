@@ -4,6 +4,9 @@
    ============================================================ */
 
 :root {
+  /* App forzada a modo claro (dark deshabilitado, ver App.tsx). */
+  color-scheme: light;
+
   /* --- Paleta oficial LLA --- */
   --lla-primary: #371859;        /* violeta principal */
   --lla-primary-dark: #230552;
