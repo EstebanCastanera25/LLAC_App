@@ -141,9 +141,6 @@ const ReclamosList: React.FC = () => {
                 <p style={{ marginTop: 0 }}>
                   <IonIcon icon={locationOutline} /> {detalle.ubicacion?.direccion || '—'}
                 </p>
-                {detalle.ubicacion && (
-                  <IonNote>{detalle.ubicacion.lat.toFixed(5)}, {detalle.ubicacion.lng.toFixed(5)}</IonNote>
-                )}
                 <p style={{ marginTop: 12, color: 'var(--ion-color-medium)' }}>
                   Circuito {detalle.circuitoNumero}
                   {ajeno && detalle.creadoPor?.nombre ? ` · Reportó: ${detalle.creadoPor.nombre}` : ''}
