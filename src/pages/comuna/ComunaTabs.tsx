@@ -2,11 +2,12 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
 import {
-  homeOutline, calendarOutline, chatbubblesOutline, newspaperOutline, mapOutline, megaphoneOutline,
+  homeOutline, calendarOutline, chatbubblesOutline, peopleOutline, mapOutline, megaphoneOutline,
 } from 'ionicons/icons';
 import MiPerfil from './MiPerfil';
 import InicioComuna from './InicioComuna';
 import Eventos from './Eventos';
+import Grupos from './Grupos';
 import Placeholder from '../../components/Placeholder';
 import CoordinacionHome from './coordinacion/CoordinacionHome';
 import CircuitoDetalle from './coordinacion/CircuitoDetalle';
@@ -34,7 +35,7 @@ const ComunaTabs: React.FC = () => {
         <Route exact path="/comuna/inicio" component={InicioComuna} />
         <Route exact path="/comuna/eventos" component={Eventos} />
         <Route exact path="/comuna/sugerencias" render={() => <Placeholder titulo="Sugerencias" />} />
-        <Route exact path="/comuna/noticias" render={() => <Placeholder titulo="Noticias" />} />
+        <Route exact path="/comuna/grupos" component={Grupos} />
         <Route exact path="/comuna/perfil" component={MiPerfil} />
 
         {/* Reclamos: cualquier usuario aprobado */}
@@ -62,9 +63,9 @@ const ComunaTabs: React.FC = () => {
           <IonIcon icon={chatbubblesOutline} />
           <IonLabel>Sugerencias</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="noticias" href="/comuna/noticias">
-          <IonIcon icon={newspaperOutline} />
-          <IonLabel>Noticias</IonLabel>
+        <IonTabButton tab="grupos" href="/comuna/grupos">
+          <IonIcon icon={peopleOutline} />
+          <IonLabel>Grupos</IonLabel>
         </IonTabButton>
         <IonTabButton tab="reclamos" href="/comuna/reclamos">
           <IonIcon icon={megaphoneOutline} />
