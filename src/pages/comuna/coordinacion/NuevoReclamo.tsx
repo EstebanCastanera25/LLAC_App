@@ -23,6 +23,37 @@ function blobToDataUrl(blob: Blob): Promise<string> {
   });
 }
 
+const MAX_DIM = 1600;
+const JPEG_QUALITY = 0.8;
+const MAX_UPLOAD_MB = 8;
+
+/** Redimensiona (máx MAX_DIM px) y re-codifica a JPEG en canvas.
+ *  Baja el peso y convierte HEIC/PNG → JPEG (formato que sharp decodifica en el backend).
+ *  Lanza si el navegador no puede decodificar/exportar la imagen. */
+async function procesarImagen(blob: Blob): Promise<Blob> {
+  const bmp = await createImageBitmap(blob, { imageOrientation: 'from-image' });
+  try {
+    const escala = Math.min(1, MAX_DIM / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * escala);
+    const h = Math.round(bmp.height * escala);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('No se pudo procesar la imagen.');
+    ctx.drawImage(bmp, 0, 0, w, h);
+    return await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (out) => (out ? resolve(out) : reject(new Error('No se pudo procesar la imagen.'))),
+        'image/jpeg',
+        JPEG_QUALITY,
+      );
+    });
+  } finally {
+    bmp.close();
+  }
+}
+
 /** Alta de un reclamo: foto + descripción + ubicación (GPS o mapa de la comuna).
  *  El circuito lo detecta el backend por la ubicación. */
 const NuevoReclamo: React.FC = () => {
@@ -54,6 +85,23 @@ const NuevoReclamo: React.FC = () => {
     return () => { vivo = false; };
   }, []);
 
+  /** Recomprime la foto antes de guardarla. Si el navegador no puede decodificarla,
+   *  usa el original salvo que supere MAX_UPLOAD_MB (red de seguridad). */
+  const prepararFoto = async (blob: Blob) => {
+    let final = blob;
+    try {
+      final = await procesarImagen(blob);
+    } catch {
+      if (blob.size > MAX_UPLOAD_MB * 1024 * 1024) {
+        setError(`La foto es muy pesada (máx ${MAX_UPLOAD_MB} MB). Probá con otra o sacala de nuevo.`);
+        return;
+      }
+    }
+    setFotoBlob(final);
+    setFotoPreview(await blobToDataUrl(final));
+    setError(null);
+  };
+
   const tomarFoto = async () => {
     if (Capacitor.getPlatform() === 'web') {
       fileInputRef.current?.click();
@@ -68,8 +116,7 @@ const NuevoReclamo: React.FC = () => {
       });
       if (photo.webPath) {
         const blob = await fetch(photo.webPath).then((r) => r.blob());
-        setFotoBlob(blob);
-        setFotoPreview(await blobToDataUrl(blob));
+        await prepararFoto(blob);
       }
     } catch {
       fileInputRef.current?.click();
@@ -79,8 +126,7 @@ const NuevoReclamo: React.FC = () => {
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setFotoBlob(file);
-    setFotoPreview(await blobToDataUrl(file));
+    await prepararFoto(file);
   };
 
   const resolverDireccion = async (lat: number, lng: number) => {
