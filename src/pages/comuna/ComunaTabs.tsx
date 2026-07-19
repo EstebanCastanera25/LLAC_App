@@ -2,13 +2,12 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
 import {
-  homeOutline, calendarOutline, chatbubblesOutline, peopleOutline, mapOutline, megaphoneOutline,
+  homeOutline, calendarOutline, peopleOutline, mapOutline, megaphoneOutline,
 } from 'ionicons/icons';
 import MiPerfil from './MiPerfil';
 import InicioComuna from './InicioComuna';
 import Eventos from './Eventos';
 import Grupos from './Grupos';
-import Placeholder from '../../components/Placeholder';
 import CoordinacionHome from './coordinacion/CoordinacionHome';
 import CircuitoDetalle from './coordinacion/CircuitoDetalle';
 import MapaCircuito from './coordinacion/MapaCircuito';
@@ -34,7 +33,6 @@ const ComunaTabs: React.FC = () => {
       <IonRouterOutlet>
         <Route exact path="/comuna/inicio" component={InicioComuna} />
         <Route exact path="/comuna/eventos" component={Eventos} />
-        <Route exact path="/comuna/sugerencias" render={() => <Placeholder titulo="Sugerencias" />} />
         <Route exact path="/comuna/grupos" component={Grupos} />
         <Route exact path="/comuna/perfil" component={MiPerfil} />
 
@@ -58,10 +56,6 @@ const ComunaTabs: React.FC = () => {
         <IonTabButton tab="eventos" href="/comuna/eventos">
           <IonIcon icon={calendarOutline} />
           <IonLabel>Eventos</IonLabel>
-        </IonTabButton>
-        <IonTabButton tab="sugerencias" href="/comuna/sugerencias">
-          <IonIcon icon={chatbubblesOutline} />
-          <IonLabel>Sugerencias</IonLabel>
         </IonTabButton>
         <IonTabButton tab="grupos" href="/comuna/grupos">
           <IonIcon icon={peopleOutline} />

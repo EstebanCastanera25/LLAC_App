@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import {
   IonContent, IonList, IonItem, IonLabel, IonTextarea,
-  IonButton, IonIcon, IonSpinner, IonText, IonInput, IonImg, IonNote,
+  IonButton, IonIcon, IonSpinner, IonText, IonInput, IonNote,
 } from '@ionic/react';
 import { cameraOutline, locateOutline, sendOutline, mapOutline, searchOutline } from 'ionicons/icons';
 import { Capacitor } from '@capacitor/core';
@@ -234,7 +234,11 @@ const NuevoReclamo: React.FC = () => {
           <IonIcon icon={cameraOutline} slot="start" /> {fotoBlob ? 'Cambiar foto' : 'Sacar / subir foto'}
         </IonButton>
         {fotoPreview && (
-          <IonImg src={fotoPreview} style={{ marginTop: 8, borderRadius: 8, maxHeight: 220, objectFit: 'cover' }} />
+          <img
+            src={fotoPreview}
+            alt="Previsualización del reclamo"
+            style={{ display: 'block', width: '100%', maxHeight: 220, objectFit: 'cover', borderRadius: 8, marginTop: 8 }}
+          />
         )}
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
